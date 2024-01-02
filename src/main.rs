@@ -39,12 +39,14 @@ fn main() {
 
     let verbosity = matches.occurrences_of("v");
 
-    let log_level = if verbosity > 1 {
+    let log_level = if verbosity > 2 {
         log::LevelFilter::Trace
-    } else if verbosity > 0 {
+    } else if verbosity > 1 {
         log::LevelFilter::Debug
-    } else {
+    } else if verbosity > 0 {
         log::LevelFilter::Info
+    } else {
+        log::LevelFilter::Warn
     };
 
     let settings_file_path = std::path::Path::new(matches.value_of("cfg").unwrap());
@@ -321,12 +323,14 @@ fn process_deb(filename: &std::path::Path, to: &std::path::Path) {
             log::error!("ar x {} failed", filename.display());
         }
     } else {
-        log::warn!("ar x {} Interrupted!", filename.display());
+        log::warn!("ar x {} interrupted!", filename.display());
     }
 
     let mut data_tar = std::path::Path::new("data.tar.zst");
+    let mut control_tar = std::path::Path::new("control.tar.zst");
     if !data_tar.is_file() {
         data_tar = std::path::Path::new("data.tar.xz");
+        control_tar = std::path::Path::new("control.tar.xz");
     }
     let mut command_tar = Command::new("tar");
     command_tar.arg("xf");
@@ -338,18 +342,20 @@ fn process_deb(filename: &std::path::Path, to: &std::path::Path) {
             log::error!("tar xf {} failed", filename.display());
         }
     } else {
-        log::warn!("tar xf {} Interrupted!", filename.display());
+        log::warn!("tar xf {} interrupted!", filename.display());
     }
 
     let mut command_rm = Command::new("rm");
     command_rm.arg("-f");
     command_rm.arg(data_tar);
+    command_rm.arg(control_tar);
+    command_rm.arg("debian-binary");
     if let Some(exit_code) = command_rm.execute().unwrap() {
         if exit_code != 0 {
-            log::error!("rm {} failed", data_tar.display());
+            log::error!("rm cache failed");
         }
     } else {
-        log::warn!("rm {} Interrupted!", data_tar.display());
+        log::warn!("rm cache interrupted!");
     }
 }
 
