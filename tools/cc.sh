@@ -43,7 +43,7 @@ fi
 cd ${COLCON_WS}
 
 # Select toolchain file:
-CMAKE_TOOLCHAIN_FILE=${THIS_FOLDER}/generic_linux.cmake
+CMAKE_TOOLCHAIN_FILE=${THIS_FOLDER}/generic-linux.cmake
 
 colcon build --merge-install \
     --cmake-args -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
