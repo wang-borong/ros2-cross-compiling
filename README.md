@@ -1,5 +1,15 @@
 # ros2-cross-compiling
 
+It's a toolchain to setup ros2 cross compiling.
+
+## Prerequisites
+
+Please check if your host ubuntu version is the same as your target ubuntu version.
+Then, modify the distribution_version definition in tools/sysroot-rpi-ubuntu-arm64.toml to your ubuntu version as follows.
+```
+distribution_version = "jammy"
+```
+
 ## Usage
 
 1. create a sysroot by tools/create-sysroot.sh.
